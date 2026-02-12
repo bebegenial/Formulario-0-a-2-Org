@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-from drive import guardar_en_google_sheets,agregar_contacto
+from drive import guardar_en_google_sheets,agregar_contacto,console_log
 import datetime
 #pip freeze > requirements.txt
 #streamlit run test.py
@@ -270,11 +270,14 @@ if procesado:
         # Convertimos a minúsculas para que la validación sea insensible a mayúsculas
         if "prueba" in nombre.lower():
             print(f"Registro omitido: El nombre '{nombre}' contiene la palabra de control 'prueba'.")
+            console_log(f"Registro omitido: El nombre '{nombre}' contiene la palabra de control 'prueba'.")
         else:
             print(f"Validación exitosa. Procediendo a crear cliente: {nombre}")
+            console_log(f"Validación exitosa. Procediendo a crear cliente: {nombre}")
             # Ejecutamos la función que ya definiste anteriormente
             try:
                 guardar_en_google_sheets(nombre, correo, telefono, nombre_nino, str(fecha_nacimiento), "Organico", respuestas, resultado_test) 
             except Exception as e:
                 print(f"Error al crear el cliente en Google Sheets: {str(e)}")
+                console_log(f"Error al crear el cliente en BBDD: {str(e)}")
                 

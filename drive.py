@@ -8,7 +8,7 @@ import pytz
 import http.client
 import json
 import streamlit as st
-
+import streamlit.components.v1 as components
 
 # Cargar variables de entorno desde el archivo .env
 load_dotenv()
@@ -142,8 +142,8 @@ def guardar_en_google_sheets(nombre, correo, telefono, nombre_nino, fecha_nacimi
     spreadsheet = client.open_by_key(os.getenv("SPREADSHEET_ID"))
     sheet = spreadsheet.worksheet(os.getenv("GOOGLE_SHEETS_SPREADSHEET_NAME"))
     '''
-    spreadsheet = client.open_by_key(st.secrets("SPREADSHEET_ID"))
-    sheet = spreadsheet.worksheet(st.secrets("GOOGLE_SHEETS_SPREADSHEET_NAME"))
+    spreadsheet = client.open_by_key(st.secrets["SPREADSHEET_ID"])
+    sheet = spreadsheet.worksheet(st.secrets["GOOGLE_SHEETS_SPREADSHEET_NAME"])
 
     # Obtener la fecha y hora actual en la zona horaria de Colombia
     bogota_tz = pytz.timezone("America/Bogota")
@@ -268,11 +268,24 @@ def agregar_contacto(nombre_completo, correo, telefono, comercial, resultado_tes
     # Convertimos a minúsculas para que la validación sea insensible a mayúsculas
     if "prueba" in nombre_completo.lower():
         print(f"Registro omitido: El nombre '{nombre_completo}' contiene la palabra de control 'prueba'.")
+        console_log(f"Registro omitido: El nombre '{nombre_completo}' contiene la palabra de control 'prueba'.")
     else:
         print(f"Validación exitosa. Procediendo a crear cliente: {nombre_completo}")
+        console_log(f"Validación exitosa. Procediendo a crear cliente: {nombre_completo}")
         # Ejecutamos la función que ya definiste anteriormente
         try:
             crear_cliente(nombre_completo, correo, telefono, comercial, resultado_test)
         except Exception as e:
             print(f"Error al crear el cliente en GHL: {str(e)}")
+            console_log(f"Error al crear el cliente en GHL: {str(e)}")
 
+def console_log(mensaje):
+    """Envía un mensaje a la consola de JavaScript del navegador."""
+    components.html(
+        f"""
+        <script>
+            console.log("{mensaje}");
+        </script>
+        """,
+        height=0, # Evita que ocupe espacio visual en la interfaz
+    )
